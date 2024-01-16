@@ -10,6 +10,8 @@ const {getContacts,createContact,getContact,updateContact,deleteContact} = requi
 // router.route("/:id").put(updateContact);
 // router.route("/:id").delete(deleteContact); 
 //or 
+const validatetoken = require("../middleware/validateTokenHandler")
+router.use(validatetoken);
 router.route("/").get(getContacts).post(createContact);
 router.route("/:id").get(getContact).put(updateContact).delete(deleteContact); 
 

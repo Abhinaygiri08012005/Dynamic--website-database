@@ -2,7 +2,8 @@ const asyncHandler = require("express-async-handler");
 const Contact = require("../models/contactModel");
 //@desc Get all contacts
 //@routes GET /api/contacts
-//@access Public
+//@access Public (before user id is added in the contactModel)
+//@access private
 
 
 const getContacts = asyncHandler(async (req,res) => {           //asyncHandler -> means we don't need to write that try and catch error by using express-async-handler u don't actually need that
@@ -15,7 +16,9 @@ const getContacts = asyncHandler(async (req,res) => {           //asyncHandler -
 
 //@desc create new contacts
 //@routes POST /api/contacts
-//@access Public
+//@access Public (before user id is added in the contactModel)
+//@access private
+
 
 const createContact = asyncHandler(async(req,res) =>{
     console.log("the request body is: ", req.body);
@@ -38,7 +41,8 @@ const createContact = asyncHandler(async(req,res) =>{
 
 //@desc get contacts
 //@routes GET /api/contacts/:id
-//@access Public
+//@access Public (before user id is added in the contactModel)
+//@access private
 
 const getContact =asyncHandler(async(req,res) =>{
    const contact = await Contact.findById(req.params.id);
@@ -56,7 +60,8 @@ const getContact =asyncHandler(async(req,res) =>{
 
 //@desc update contacts
 //@routes POST /api/contacts/:id 
-//@access Public
+//@access Public (before user id is added in the contactModel)
+//@access private
 
 const updateContact =asyncHandler(async(req,res) =>{
     const contact = await Contact.findById(req.params.id);
@@ -78,7 +83,8 @@ const updateContact =asyncHandler(async(req,res) =>{
 
 //@desc delete  contacts
 //@routes DELETE /api/contacts/:id
-//@access Public
+//@access Public (before user id is added in the contactModel)
+//@access private
 
 const deleteContact = asyncHandler(async(req,res) =>{
     const contact = await Contact.findById(req.params.id);

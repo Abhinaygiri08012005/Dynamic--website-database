@@ -7,7 +7,7 @@ const Contact = require("../models/contactModel");
 
 
 const getContacts = asyncHandler(async (req,res) => {           //asyncHandler -> means we don't need to write that try and catch error by using express-async-handler u don't actually need that
-    const contacts = await Contact.find();
+    const contacts = await Contact.find({ user_id: req.user.id });      //finds out all the contacts from given user id from his account
     res.status(200).json(contacts);
 });
 
@@ -21,7 +21,7 @@ const getContacts = asyncHandler(async (req,res) => {           //asyncHandler -
 
 
 const createContact = asyncHandler(async(req,res) =>{
-    console.log("the request body is: ", req.body);
+    console.log("the request body is: ", req.body);         //body take from postman body 
     const {name, email, phone} = req.body;
     if(!name || !email || !phone){
         res.status(400);
@@ -31,6 +31,7 @@ const createContact = asyncHandler(async(req,res) =>{
          name,
          email,
          phone,
+         user_id: req.user.id
     });
     res.status(201).json(contact);
     // res.status(201).json({message:"create contacts"});
@@ -45,7 +46,7 @@ const createContact = asyncHandler(async(req,res) =>{
 //@access private
 
 const getContact =asyncHandler(async(req,res) =>{
-   const contact = await Contact.findById(req.params.id);
+   const contact = await Contact.findById(req.params.id);           //param takes from the link 
    if(!contact){ 
     res.status(404);
     throw new Error("Contact not found");
@@ -68,6 +69,10 @@ const updateContact =asyncHandler(async(req,res) =>{
    if(!contact){
     res.status(404);
     throw new Error("Contact not found");
+   }
+   if (contact.user_id.toString() !== req.user.id ) {            //to check whether the actual user/ contact owner user is updating or deleting a particular contact of his own or not
+    res.status(403);
+    throw new Error("User don't have the permission to update other user contacts");
    }
    const updatedContact = await Contact.findByIdAndUpdate(              ///question here why in this format ?
     req.params.id,          //finds the object by given id
@@ -92,7 +97,11 @@ const deleteContact = asyncHandler(async(req,res) =>{
      res.status(404);
      throw new Error("Contact not found");
     }
-    await contact.remove();
+    if (contact.user_id.toString() !== req.user.id ) {      //to check whether the actual user/ contact owner user is updating or deleting a particular contact of his own or not
+        res.status(403);
+        throw new Error("User don't have the permission to delete other user contacts");
+       }
+    await contact.deleteOne({ _id: req.params.id });        //await Contact.remove(); -> will dlt all your contacts 
     res.status(200).json({message:`delete contacts for${req.params.id}`});
 });
 

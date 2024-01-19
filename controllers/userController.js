@@ -112,7 +112,7 @@ const loginUser = async (req, res, next) => {
                     id: user.id,
                 }
             }, process.env.ACCESS_TOKEN_SECRET,
-                { expiresIn: "1m"}          //time for expire of token is given here
+                { expiresIn: "15m"}          //time for expire of token is given here
             );
             res.status(200).json({ accessToken });
         } else {
